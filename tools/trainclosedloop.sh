@@ -49,9 +49,14 @@ DDV2_ROOT="$REPO_ROOT/DiffusionDriveV2"
 NAVSIM_ROOT="$DDV2_ROOT/navsim"
 export PYTHONPATH="$REPO_ROOT:$DDV2_ROOT:$NAVSIM_ROOT:${PYTHONPATH:-}"
 
+# gsplat/nvdiffrast JIT 缓存：覆盖 shell 里可能残留的错误路径（如 /ReconSparse_base/...）
+export TORCH_EXTENSIONS_DIR="$REPO_ROOT/.cache/torch_extensions"
+mkdir -p "$TORCH_EXTENSIONS_DIR"
+
 # Multi-GPU launcher: run one training per GPU (default 0 1 2 3)
 GPUS=${GPUS:-"0 1 2 3"}
 LOG_DIR=${LOG_DIR:-"."}
+mkdir -p "${LOG_DIR}"
 echo "Launching training on GPUs: ${GPUS}" 
 for gid in ${GPUS}; do
 	suffix="gpu${gid}"

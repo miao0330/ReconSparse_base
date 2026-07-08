@@ -908,7 +908,7 @@ class TrajectoryHead(nn.Module):
         self.num_draw = 0
 
         # pdm score
-        pdm_cfg = OmegaConf.load('/root/clone/ReconDreamer-RL/DiffusionDriveV2/navsim/planning/script/config/pdm_scoring/default_scoring_parameters.yaml')
+        pdm_cfg = OmegaConf.load('/htfs/filesystem_pfs/waytous/lixm/ReconSparse_base/DiffusionDriveV2/navsim/planning/script/config/pdm_scoring/default_scoring_parameters.yaml')
         self.simulator_cfg = pdm_cfg.simulator
         self.scorer_cfg = pdm_cfg.scorer
 

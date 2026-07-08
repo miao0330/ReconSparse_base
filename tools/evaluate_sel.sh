@@ -9,7 +9,7 @@ if [[ -n "${NUPLAN_DEVKIT_ROOT:-}" ]]; then
         export PYTHONPATH="$NUPLAN_DEVKIT_ROOT:$PYTHONPATH"
 fi
 
-export TRAIN_TEST_SPLIT=${TRAIN_TEST_SPLIT:-navtest_mini}
+export TRAIN_TEST_SPLIT=${TRAIN_TEST_SPLIT:-navtest}
 # export CHECKPOINT="$REPO_ROOT/diffusion_drive/ckpt/diffusiondrive_navsim_88p1_PDMS.pth"
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 export CUDA_VISIBLE_DEVICES=0,1,2,3

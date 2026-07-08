@@ -10,20 +10,21 @@ if [[ -n "${NUPLAN_DEVKIT_ROOT:-}" ]]; then
 	export PYTHONPATH="$NUPLAN_DEVKIT_ROOT:$PYTHONPATH"
 fi
 
-export TRAIN_TEST_SPLIT=${TRAIN_TEST_SPLIT:-navtest_mini}
+export TRAIN_TEST_SPLIT=${TRAIN_TEST_SPLIT:-navtest}
 # export CHECKPOINT="$REPO_ROOT/diffusion_drive/ckpt/diffusiondrive_navsim_88p1_PDMS.pth"
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
-export CUDA_VISIBLE_DEVICES=0,1,2,3
+export CUDA_VISIBLE_DEVICES=4,5,6,7
 
 python "$NAVSIM_ROOT/planning/script/run_pdm_score.py" \
         agent=diffusiondrivev2_rl_agent \
         experiment_name=diffusiondrivev2_agent_eval \
         worker=ray_distributed \
         train_test_split="${TRAIN_TEST_SPLIT}" \
-        agent.checkpoint_path="$REPO_ROOT/outputs/weight/20260129_ppo_ver27_latest.ckpt" \
+        agent.checkpoint_path="$REPO_ROOT/DiffusionDriveV2/ckpt/diffusiondrivev2_rl.ckpt" \
         metric_cache_path="${NAVSIM_EXP_ROOT}/metric_cache/" 
 
                 # Reference:
                 # "$NAVSIM_ROOT/planning/script/config/common/train_test_split"
                 # "$REPO_ROOT/outputs/weight/20260129_ppo_ver27_latest.ckpt"
                 # NOTE "$REPO_ROOT/DiffusionDriveV2/ckpt/diffusiondrivev2_rl.ckpt"
+                # "$REPO_ROOT/outputs/actor_learner/weights/latest.ckpt" \

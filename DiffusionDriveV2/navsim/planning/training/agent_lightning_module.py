@@ -29,7 +29,7 @@ class AgentLightningModule(pl.LightningModule):
             prediction = self.agent.forward(features, targets)
         else:
             #DEBUG🐯
-            # features, targets, pdm_token_path, token = batch
+            features, targets, pdm_token_path, token = batch
             prediction = self.agent.forward(features, targets, pdm_token_path, token)
         # loss = self.agent.compute_loss(features, targets, prediction)
         # self.log(f"{logging_prefix}/loss", loss, on_step=True, on_epoch=True, prog_bar=True, sync_dist=True)

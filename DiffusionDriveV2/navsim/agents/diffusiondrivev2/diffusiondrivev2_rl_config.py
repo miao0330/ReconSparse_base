@@ -15,8 +15,8 @@ class TransfuserConfig:
 
     image_architecture: str = "resnet34"
     lidar_architecture: str = "resnet34"
-    bkb_path: str = "/root/clone/DiffusionDriveV2/ckpt/resnet34.a1_in1k/pytorch_model.bin"
-    plan_anchor_path: str = "/root/clone/DiffusionDriveV2/ckpt/resnet34.a1_in1k/kmeans_navsim_traj_20.npy"
+    bkb_path: str = "/htfs/filesystem_pfs/waytous/lixm/ReconSparse_base/DiffusionDriveV2/ckpt/resnet34.a1_in1k/pytorch_model.bin"
+    plan_anchor_path: str = "/htfs/filesystem_pfs/waytous/lixm/ReconSparse_base/DiffusionDriveV2/kmeans_navsim_traj_20.npy"
 
     latent: bool = False
     latent_rad_thresh: float = 4 * np.pi / 9

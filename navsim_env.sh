@@ -1,0 +1,5 @@
+export NUPLAN_MAP_VERSION="nuplan-maps-v1.0"
+export NUPLAN_MAPS_ROOT="/htfs/filesystem_pfs/waytous/datasets/miao/datasets/maps"
+export NAVSIM_EXP_ROOT="/htfs/filesystem_nas/ht_logs/lixm/recondiff/exp"
+export NAVSIM_DEVKIT_ROOT="/htfs/filesystem_pfs/waytous/lixm/ReconSparse_base/DiffusionDriveV2/navsim"
+export OPENSCENE_DATA_ROOT="/htfs/filesystem_pfs/waytous/datasets/miao/datasets"

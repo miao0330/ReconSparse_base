@@ -90,7 +90,7 @@ class Diffusiondrivev2_Sel_Agent(AbstractAgent):
             
             # Remove 'agent.' prefix from keys if present
             state_dict = {k.replace('agent.', ''): v for k, v in state_dict.items()}
-            state_dict = {k.replace('_transfuser_model.', ''): v for k, v in state_dict.items()}
+            # state_dict = {k.replace('_transfuser_model.', ''): v for k, v in state_dict.items()}
 
             missing_keys, unexpected_keys = self.load_state_dict(state_dict, strict=False)
             if missing_keys:

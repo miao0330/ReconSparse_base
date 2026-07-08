@@ -2,7 +2,7 @@
 import os
 
  
-DATA_ROOT = "assets/nus"
+DATA_ROOT = "/htfs/filesystem_pfs/waytous/lixm/ReconSparse_base/assets/nus"
 BASE_DATA_DIR = os.path.join(DATA_ROOT, "data")
 INFO_DIR = os.path.join(DATA_ROOT, "others")
 
