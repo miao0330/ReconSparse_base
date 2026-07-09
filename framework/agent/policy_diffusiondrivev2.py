@@ -17,7 +17,10 @@ if DDV2_ROOT not in sys.path:
 
 try:
     # RL variant only (we need diffusion log-probs for policy-gradient)
-    from navsim.agents.diffusiondrivev2.diffusiondrivev2_rl_agent import Diffusiondrivev2_Rl_Agent
+    from navsim.agents.diffusiondrivev2.diffusiondrivev2_rl_agent import (
+        Diffusiondrivev2_Rl_Agent,
+        normalize_transfuser_state_dict,
+    )
     from navsim.agents.diffusiondrivev2.diffusiondrivev2_rl_config import TransfuserConfig
 except Exception as e_rl:
     Diffusiondrivev2_Rl_Agent = None
@@ -238,22 +241,16 @@ class DiffusionDriveV2Policy(Agent):
         if not isinstance(sd, dict):
             raise ValueError("Checkpoint does not contain a state_dict")
 
-        # Strip optional prefix.
-        sd2: Dict[str, torch.Tensor] = {}
-        for k, v in sd.items():
-            kk = str(k)
-            if kk.startswith("agent."):
-                kk = kk[len("agent.") :]
-            # Some checkpoints save the *agent* state_dict and include an extra
-            # "_transfuser_model." namespace.
-            if kk.startswith("_transfuser_model."):
-                kk = kk[len("_transfuser_model.") :]
-            if torch.is_tensor(v):
-                sd2[kk] = v
+        # Strip optional prefix and load into transfuser core.
+        sd2 = normalize_transfuser_state_dict(sd)
 
         m = self._agent._transfuser_model
         core = m.module if isinstance(m, DDP) else m
-        core.load_state_dict(sd2, strict=bool(strict))
+        missing, unexpected = core.load_state_dict(sd2, strict=bool(strict))
+        if missing:
+            print(f"[DiffusionDriveV2Policy] missing keys ({len(missing)}): {missing[:8]}{'...' if len(missing) > 8 else ''}")
+        if unexpected:
+            print(f"[DiffusionDriveV2Policy] unexpected keys ({len(unexpected)}): {unexpected[:8]}{'...' if len(unexpected) > 8 else ''}")
     @property
     def device(self) -> torch.device:
         if getattr(self, "_device_override", None):

@@ -14,7 +14,7 @@ DEFAULT_SCENE_ID=${DEFAULT_SCENE_ID:-2}
 DEFAULT_DURATION_S=${DEFAULT_DURATION_S:-18}
 # 默认 ckpt 路径
 # DEFAULT_CKPT=${DEFAULT_CKPT:-"$REPO_ROOT/outputs/actor_learner/weights/latest.ckpt"} #20260129_ppo_ver27_latest.ckpt"}
-DEFAULT_CKPT=${DEFAULT_CKPT:-"/root/clone/ReconDreamer-RL/DiffusionDriveV2/ckpt/diffusiondrivev2_rl.ckpt"} #20260129_ppo_ver27_latest.ckpt"}
+DEFAULT_CKPT=${DEFAULT_CKPT:-"/htfs/filesystem_pfs/waytous/lixm/ReconSparse_base/outputs/actor_learner/weights/latest.ckpt"} #20260129_ppo_ver27_latest.ckpt"}
 # 默认模型名字（可不填；不填则从 ckpt 文件名自动推断）
 DEFAULT_MODEL_NAME=${DEFAULT_MODEL_NAME:-""}
 # 默认输出路径：

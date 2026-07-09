@@ -38,6 +38,43 @@ def build_from_configs(obj, cfg: DictConfig, **kwargs):
     return getattr(obj, type)(**cfg, **kwargs)
 
 
+def normalize_transfuser_state_dict(state_dict: Dict[str, Any]) -> Dict[str, torch.Tensor]:
+    """Normalize checkpoint keys to transfuser core module names.
+
+    Supported raw formats:
+    - agent._transfuser_model._backbone.*   (official Navsim ckpt)
+    - agent._backbone.*                     (PPO / actor-learner ckpt)
+    - _transfuser_model._backbone.*         (converted ckpt)
+    - _backbone.*                           (already core-level)
+    """
+    out: Dict[str, torch.Tensor] = {}
+    for k, v in state_dict.items():
+        if not torch.is_tensor(v):
+            continue
+        kk = str(k)
+        if kk.startswith("agent."):
+            kk = kk[len("agent.") :]
+        if kk.startswith("_transfuser_model."):
+            kk = kk[len("_transfuser_model.") :]
+        out[kk] = v
+    return out
+
+
+def _load_transfuser_from_state_dict(
+    model: nn.Module,
+    state_dict: Dict[str, Any],
+    *,
+    strict: bool = False,
+    label: str = "pretrained",
+) -> None:
+    sd = normalize_transfuser_state_dict(state_dict)
+    missing_keys, unexpected_keys = model.load_state_dict(sd, strict=bool(strict))
+    if missing_keys:
+        print(f"Missing keys when loading {label} weights ({len(missing_keys)}): {missing_keys[:8]}{'...' if len(missing_keys) > 8 else ''}")
+    if unexpected_keys:
+        print(f"Unexpected keys when loading {label} weights ({len(unexpected_keys)}): {unexpected_keys[:8]}{'...' if len(unexpected_keys) > 8 else ''}")
+
+
 class Diffusiondrivev2_Rl_Agent(AbstractAgent):
     """Agent interface for TransFuser baseline."""
 
@@ -70,21 +107,15 @@ class Diffusiondrivev2_Rl_Agent(AbstractAgent):
 
     def init_from_pretrained(self):
         if self._checkpoint_path:
-            checkpoint = torch.load(self._checkpoint_path, map_location=torch.device('cpu'))
-            
-            state_dict = checkpoint['state_dict']
-            
-            # Remove 'agent.' prefix from keys if present
-            state_dict = {k.replace('agent.', ''): v for k, v in state_dict.items()}
-            # Some ckpts also include an extra '_transfuser_model.' namespace.
-            # state_dict = {k.replace('_transfuser_model.', ''): v for k, v in state_dict.items()}
-            # Load state dict and get info about missing and unexpected keys
-            missing_keys, unexpected_keys = self.load_state_dict(state_dict, strict=False)
-            if missing_keys:
-                print(f"Missing keys when loading pretrained weights: {missing_keys}")
-            if unexpected_keys:
-                print(f"Unexpected keys when loading pretrained weights: {unexpected_keys}")
-        
+            checkpoint = torch.load(self._checkpoint_path, map_location=torch.device("cpu"))
+            state_dict = checkpoint["state_dict"]
+            # Load into transfuser core (not agent wrapper) to support all ckpt key formats.
+            _load_transfuser_from_state_dict(
+                self._transfuser_model,
+                state_dict,
+                strict=False,
+                label="pretrained",
+            )
         else:
             print("No checkpoint path provided. Initializing from scratch.")
 
@@ -102,7 +133,12 @@ class Diffusiondrivev2_Rl_Agent(AbstractAgent):
             ]
         # Evaluation should be tolerant to extra keys (model definition drifts across commits).
         # Otherwise Ray workers crash with "Unexpected key(s)".
-        self.load_state_dict({k.replace("agent.", "").replace("_transfuser_model.", ""): v for k, v in state_dict.items()}, strict=False)
+        _load_transfuser_from_state_dict(
+            self._transfuser_model,
+            state_dict,
+            strict=False,
+            label="eval",
+        )
 
     def compute_trajectory(self, agent_input: AgentInput) -> Trajectory:
         """Override default compute_trajectory.

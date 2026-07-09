@@ -14,8 +14,11 @@ if _REPO_ROOT not in sys.path:
     sys.path.insert(0, _REPO_ROOT)
 
 from framework.env_wrapper import RLReconEnv
-from framework.algorithms import PPOAgent
 from framework.agent.policy_diffusiondrivev2 import DiffusionDriveV2Policy
+
+_DEFAULT_OFFICIAL_CKPT = os.path.join(
+    _REPO_ROOT, "DiffusionDriveV2", "ckpt", "diffusiondrivev2_rl.ckpt"
+)
 
 
 def load_yaml(path: str) -> Dict[str, Any]:
@@ -48,17 +51,19 @@ def main():
     x_anchor = getattr(env.env, "x_anchor", 61)
     y_anchor = getattr(env.env, "y_anchor", 61)
     agent_cfg = cfg.get("agent", {})
-    ckpt_path = agent_cfg.get(
-        "ckpt",
-        os.path.join(_REPO_ROOT, "DiffusionDriveV2", "ckpt", "diffusiondrivev2_rl.ckpt"),
-    )
-    ckpt_path = _resolve_repo_path(ckpt_path)
-    use_ddv2 = bool(agent_cfg.get("use_ddv2", True))#ddv2 diffusionDriveV2Policy
+    ckpt_path = _resolve_repo_path(agent_cfg.get("ckpt", _DEFAULT_OFFICIAL_CKPT))
+    use_ddv2 = bool(agent_cfg.get("use_ddv2", True))
 
-    if use_ddv2:
-        agent = DiffusionDriveV2Policy(x_anchor=x_anchor, y_anchor=y_anchor, ckpt_path=ckpt_path, device=f"cuda:{cuda}")
-    else:
-        agent = PPOAgent(x_anchor=x_anchor, y_anchor=y_anchor)
+    if not use_ddv2:
+        raise RuntimeError("agent.use_ddv2=false is no longer supported")
+
+    agent = DiffusionDriveV2Policy(
+        x_anchor=x_anchor,
+        y_anchor=y_anchor,
+        ckpt_path=ckpt_path,
+        device=f"cuda:{cuda}",
+    )
+    print(f"[eval_closed_loop] loaded weights from: {ckpt_path}")
 
     max_steps = int(env_cfg.get("max_steps", 200))
 

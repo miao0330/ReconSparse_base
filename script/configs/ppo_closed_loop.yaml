@@ -95,4 +95,4 @@ train:
     seed: 42
 
 agent:
-  ckpt: DiffusionDriveV2/ckpt/diffusiondrivev2_rl.ckpt
+  ckpt: /htfs/filesystem_pfs/waytous/lixm/ReconSparse_base/outputs/actor_learner/weights/latest.ckpt

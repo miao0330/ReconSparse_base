@@ -13,7 +13,7 @@ fi
 export TRAIN_TEST_SPLIT=${TRAIN_TEST_SPLIT:-navtest}
 # export CHECKPOINT="$REPO_ROOT/diffusion_drive/ckpt/diffusiondrive_navsim_88p1_PDMS.pth"
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
-export CUDA_VISIBLE_DEVICES=4,5,6,7
+export CUDA_VISIBLE_DEVICES=0,1,2,3
 
 python "$NAVSIM_ROOT/planning/script/run_pdm_score.py" \
         agent=diffusiondrivev2_rl_agent \
