@@ -20,6 +20,13 @@ bash tools/evaluate_fast.sh
 bash tools/evaluate_rl.sh
 bash tools/evaluate_sel.sh
 
-# 闭环 RL 训练
+# 闭环 RL 训练（后台）
+screen -S train_rl
+LOG_DIR=./logs CONFIG=script/configs/ppo_closed_loop.yaml bash tools/train_actor_learner.sh
+退出：Ctrl + A 然后按 D
+查看当前有哪些 screen：：screen -ls
+重新进入这个训练窗口：screen -r train_rl
+
+# 评估
 
 ```
