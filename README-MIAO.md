@@ -1,4 +1,3 @@
-```Plain Text
 # 启动环境
 conda activate recondreamerNew-rl
 
@@ -29,4 +28,4 @@ LOG_DIR=./logs CONFIG=script/configs/ppo_closed_loop.yaml bash tools/train_actor
 
 # 评估 （开源代码无相关部分）
 insight：main分支中的想法，在ReconDreamer上训练，在HUGSIM上进行评估
-```
+
