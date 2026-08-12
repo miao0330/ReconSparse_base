@@ -27,6 +27,6 @@ LOG_DIR=./logs CONFIG=script/configs/ppo_closed_loop.yaml bash tools/train_actor
 查看当前有哪些 screen：：screen -ls
 重新进入这个训练窗口：screen -r train_rl
 
-# 评估
-
+# 评估 （开源代码无相关部分）
+insight：main分支中的想法，在ReconDreamer上训练，在HUGSIM上进行评估
 ```
